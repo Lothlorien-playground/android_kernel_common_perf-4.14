@@ -80,12 +80,12 @@ do_wait_for_common(struct completion *x,
 	if (!x->done) {
 		DECLARE_WAITQUEUE(wait, current);
 
-		__add_wait_queue_entry_tail_exclusive(&x->wait, &wait);
 		do {
 			if (signal_pending_state(state, current)) {
 				timeout = -ERESTARTSYS;
 				break;
 			}
+			__add_wait_queue_entry_tail_exclusive(&x->wait, &wait);
 			__set_current_state(state);
 			spin_unlock_irq(&x->wait.lock);
 			timeout = action(timeout);
