@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2014-2019, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,6 +18,7 @@
 #include <linux/of_irq.h>
 #include <linux/of.h>
 #include <linux/pm_wakeup.h>
+#include <linux/delay.h>
 
 #define PROC_AWAKE_ID 12 /* 12th bit */
 #define AWAKE_BIT BIT(PROC_AWAKE_ID)
