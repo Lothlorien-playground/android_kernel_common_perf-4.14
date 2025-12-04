@@ -11,6 +11,16 @@ SECONDS=0
 
 # --- Helper Functions ---
 
+check_variables() {
+if [ "$KSU_BASE" ]; then
+  # This block runs if $KSU_BASE is set and NOT empty
+  echo "KSU_BASE is set to: $KSU_BASE"
+else
+  # This block runs if $KSU_BASE is unset OR empty (e.g., KSU_BASE="")
+  echo "KSU_BASE is not set."
+fi
+}
+
 setup_environment() {
   echo "Setting up build environment..."
   export ARCH=arm64
@@ -78,6 +88,7 @@ print_summary() {
 # --- Main Execution ---
 
 main() {
+  check_variables
   setup_environment
   setup_clang
   setup_path

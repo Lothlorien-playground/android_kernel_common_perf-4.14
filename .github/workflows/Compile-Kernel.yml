@@ -4,6 +4,16 @@ name: Compile Kernel for AOSP
 
 on:
   workflow_dispatch:
+    inputs:
+      BUILD_TYPE:
+        description: 'Choose what to compile'
+        required: true
+        default: 'VNL'
+        type: choice
+        options:
+          - VNL
+          - KSUN
+          - RKSU
 
 jobs:
   build:
@@ -25,16 +35,37 @@ jobs:
 
       - name: Set Build Variables
         run: |
-          echo "ZIPNAME=Maiar-v1.0-Silmaril-$(date '+%Y%m%d-%H%M').zip" >> $GITHUB_ENV
+          echo "ZIPNAME=Maiar-v1.0-Silmaril-${{ github.event.inputs.BUILD_TYPE }}-$(date '+%Y%m%d-%H%M').zip" >> $GITHUB_ENV
 
       - name: Set Git identity for ${{ github.actor }}
         run: |
           git config --global user.name "galadriel1402"
           git config --global user.email "galadriel1402@gmail.com"
 
-      - name: Compile Kernel
+      - name: Compile without KSU
         # --- FIX: 'run:' was incorrectly indented ---
+        if: ${{ github.event.inputs.BUILD_TYPE == 'VNL' }}
         run: |
+          export KSU_BASE=${{ github.event.inputs.BUILD_TYPE }}
+          chmod +x scripts/compile.sh
+          bash scripts/compile.sh
+
+      - name: Clone KernelSU-Next and compile
+        # --- FIX: 'run:' was incorrectly indented ---
+        if: ${{ github.event.inputs.BUILD_TYPE == 'KSUN' }}
+        run: |
+          git clone https://github.com/KernelSU-Next/KernelSU-Next --depth=1 -b next KernelSU
+          cd KernelSU && git fetch https://github.com/galadriel1402/KernelSU-Next && git cherry-pick 16fc108^..894c009 && cd ../
+          export KSU_BASE=${{ github.event.inputs.BUILD_TYPE }}
+          chmod +x scripts/compile.sh
+          bash scripts/compile.sh
+
+      - name: Clone RissuKSU and compile
+        # --- FIX: 'run:' was incorrectly indented ---
+        if: ${{ github.event.inputs.BUILD_TYPE == 'RKSU' }}
+        run: |
+          git clone https://github.com/rsuntk/KernelSU --depth=1 -b main KernelSU
+          export KSU_BASE=${{ github.event.inputs.BUILD_TYPE }}
           chmod +x scripts/compile.sh
           bash scripts/compile.sh
 
