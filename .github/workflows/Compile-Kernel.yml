@@ -46,6 +46,8 @@ jobs:
         # --- FIX: 'run:' was incorrectly indented ---
         if: ${{ github.event.inputs.BUILD_TYPE == 'VNL' }}
         run: |
+          patch -p1 < patches/0001-revert-KSU.patch
+          patch -p1 < patches/0001-fixed4APatch.patch
           export KSU_BASE=${{ github.event.inputs.BUILD_TYPE }}
           chmod +x scripts/compile.sh
           bash scripts/compile.sh
