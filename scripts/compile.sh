@@ -50,6 +50,13 @@ compile_kernel() {
   
   # 1. Make the base defconfig
   make O=out ARCH=arm64 vendor/sdmsteppe-perf_defconfig vendor/sweet.config
+  # 2. Apply KSU config ONLY if the file exists
+  if [ -f "KSU/${KSU_BASE}.config" ]; then
+    echo "Applying KSU/${KSU_BASE}.config"
+    make O=out ARCH=arm64 KSU/${KSU_BASE}.config
+  else
+    echo "No config for ${KSU_BASE}, skipping"
+  fi
 
   # 3. Run the main build
   make -j$(nproc --all) \
